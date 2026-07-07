@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #001427;
+  --color-bg-surface: #001e36;
+  --color-bg-elevated: #002a4a;
+  --color-border-subtle: rgba(244, 213, 141, 0.08);
+  --color-border-hover: rgba(244, 213, 141, 0.15);
+  --color-text-primary: #f0ece4;
+  --color-text-secondary: #a09888;
+  --color-text-muted: #5a5548;
+  --color-accent-gold: #F4D58D;
+  --color-accent-sage: #708D81;
+  --color-accent-red: #BF0603;
+  --color-accent-darkred: #8D0801;
+  --color-style-formal: #708D81;
+  --color-style-sarcastic: #F4D58D;
+  --color-style-tech: #BF0603;
+  --color-style-nontech: #8D0801;
+  --color-error: #BF0603;
+  --color-success: #708D81;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-geist-pixel: 'Geist Pixel', monospace;
+}
+
+/* ── Base resets ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Custom animations ── */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 213, 141, 0.2); }
+  50% { box-shadow: 0 0 20px 4px rgba(244, 213, 141, 0.1); }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* ── Utility animation classes ── */
+@utility animate-slide-up {
+  animation: slideUp 0.5s ease-out both;
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+@utility animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-surface) 25%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@utility animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@utility animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out both;
+}
+
+@utility animate-slide-out-right {
+  animation: slideOutRight 0.3s ease-in both;
+}
+
+/* ── Glass surface ── */
+@utility glass {
+  background: rgba(244, 213, 141, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border-subtle);
+}
+
+@utility glass-hover {
+  background: rgba(244, 213, 141, 0.05);
+  border-color: var(--color-border-hover);
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 213, 141, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 213, 141, 0.2);
+}
