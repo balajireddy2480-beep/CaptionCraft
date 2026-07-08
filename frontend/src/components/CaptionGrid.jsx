@@ -1,16 +1,12 @@
-/**
- * CaptionGrid — Responsive grid of CaptionCards.
- */
 import CaptionCard from './CaptionCard';
 
-export default function CaptionGrid({ captions, selectedStyles }) {
+export default function CaptionGrid({ captions, selectedStyles, fontFamily }) {
   if (!captions) return null;
 
   return (
     <div className="space-y-5">
-      {/* Video summary */}
       {captions.video_summary && (
-        <div className="glass rounded-xl px-5 py-4 animate-slide-up">
+        <div className="glass rounded-xl px-5 py-4 animate-slide-up shadow-lg shadow-black/5">
           <p className="text-text-muted text-xs font-medium uppercase tracking-wider mb-1.5">
             What the AI saw
           </p>
@@ -20,7 +16,6 @@ export default function CaptionGrid({ captions, selectedStyles }) {
         </div>
       )}
 
-      {/* Caption cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {selectedStyles.map((styleId, index) => {
           const caption = captions[styleId];
@@ -32,12 +27,12 @@ export default function CaptionGrid({ captions, selectedStyles }) {
               styleId={styleId}
               caption={caption}
               delay={index * 120}
+              fontFamily={fontFamily}
             />
           );
         })}
       </div>
 
-      {/* Processing time */}
       {captions.processing_time_seconds > 0 && (
         <p className="text-text-muted text-xs text-center animate-fade-in">
           Generated in {captions.processing_time_seconds.toFixed(1)}s using{' '}

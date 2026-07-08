@@ -1,6 +1,3 @@
-/**
- * ActionBar — Download JSON and Try Another buttons.
- */
 import { useCallback } from 'react';
 
 export default function ActionBar({ captions, onReset }) {
@@ -30,28 +27,26 @@ export default function ActionBar({ captions, onReset }) {
 
   return (
     <div className="flex flex-col sm:flex-row gap-3 animate-slide-up" style={{ animationDelay: '500ms' }}>
-      {/* Download JSON */}
       <button
         onClick={handleDownload}
         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl
-                   text-sm font-medium bg-white/5 border border-border-subtle
-                   text-text-secondary hover:text-text-primary hover:bg-white/8
+                   text-sm font-medium bg-white/[0.03] border border-border-subtle
+                   text-text-secondary hover:text-text-primary hover:bg-white/[0.06]
                    hover:border-border-hover transition-all duration-200"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round"
-            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
           />
         </svg>
         Download JSON
       </button>
 
-      {/* Try Another */}
       <button
         onClick={onReset}
         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl
-                   text-sm font-medium border border-accent-gold/30
-                    text-accent-gold hover:bg-accent-gold/10
+                   text-sm font-medium border border-accent-gold/25
+                   text-accent-gold hover:bg-accent-gold/10 hover:border-accent-gold/50
                    transition-all duration-200"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

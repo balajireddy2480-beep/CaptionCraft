@@ -1,6 +1,3 @@
-/**
- * UploadZone — Drag-and-drop area with file input fallback.
- */
 import { useState, useRef, useCallback } from 'react';
 
 export default function UploadZone({ onFileSelect, disabled }) {
@@ -24,25 +21,17 @@ export default function UploadZone({ onFileSelect, disabled }) {
     e.stopPropagation();
     setIsDragOver(false);
     if (disabled) return;
-
     const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      onFileSelect(files[0]);
-    }
+    if (files.length > 0) onFileSelect(files[0]);
   }, [onFileSelect, disabled]);
 
   const handleClick = useCallback(() => {
-    if (!disabled && inputRef.current) {
-      inputRef.current.click();
-    }
+    if (!disabled && inputRef.current) inputRef.current.click();
   }, [disabled]);
 
   const handleInputChange = useCallback((e) => {
     const files = e.target.files;
-    if (files.length > 0) {
-      onFileSelect(files[0]);
-    }
-    // Reset input so the same file can be re-selected
+    if (files.length > 0) onFileSelect(files[0]);
     e.target.value = '';
   }, [onFileSelect]);
 
@@ -52,23 +41,25 @@ export default function UploadZone({ onFileSelect, disabled }) {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
       className={`
         relative cursor-pointer rounded-2xl border-2 border-dashed p-12 md:p-16
         transition-all duration-300 ease-out text-center group
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${isDragOver
-          ? 'border-accent-gold bg-accent-gold/10 scale-[1.01] shadow-lg shadow-accent-gold/10'
+          ? 'border-accent-gold bg-accent-gold/[0.08] scale-[1.01] shadow-lg shadow-accent-gold/10'
           : 'border-border-subtle hover:border-border-hover hover:bg-white/[0.02]'
         }
       `}
     >
-      {/* Upload icon */}
       <div className={`
-        mx-auto mb-4 w-16 h-16 rounded-2xl flex items-center justify-center
+        mx-auto mb-5 w-16 h-16 rounded-2xl flex items-center justify-center
         transition-all duration-300
         ${isDragOver
           ? 'bg-accent-gold/20 scale-110'
-          : 'bg-white/5 group-hover:bg-white/8'
+          : 'bg-white/[0.04] group-hover:bg-white/[0.06]'
         }
       `}>
         <svg
@@ -81,17 +72,16 @@ export default function UploadZone({ onFileSelect, disabled }) {
         </svg>
       </div>
 
-      <p className="text-text-primary text-lg font-medium mb-1">
+      <p className="text-text-primary text-lg font-medium mb-1.5">
         {isDragOver ? 'Drop your video here' : 'Drag & drop your video'}
       </p>
       <p className="text-text-muted text-sm">
-        or <span className="text-accent-gold underline underline-offset-2">browse files</span>
+        or <span className="text-accent-gold underline underline-offset-2 decoration-accent-gold/40 hover:decoration-accent-gold/80 transition-all">browse files</span>
       </p>
       <p className="text-text-muted text-xs mt-3">
-        MP4, MOV, WebM, AVI, MKV • Max 25 MB
+        MP4, MOV, WebM, AVI, MKV &bull; Max 25 MB
       </p>
 
-      {/* Hidden file input */}
       <input
         ref={inputRef}
         type="file"

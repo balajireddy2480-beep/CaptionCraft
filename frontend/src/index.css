@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #001427;
-  --color-bg-surface: #001e36;
-  --color-bg-elevated: #002a4a;
-  --color-border-subtle: rgba(244, 213, 141, 0.08);
-  --color-border-hover: rgba(244, 213, 141, 0.15);
-  --color-text-primary: #f0ece4;
-  --color-text-secondary: #a09888;
-  --color-text-muted: #5a5548;
-  --color-accent-gold: #F4D58D;
-  --color-accent-sage: #708D81;
-  --color-accent-red: #BF0603;
-  --color-accent-darkred: #8D0801;
+  --color-bg-primary: #0B0E12;
+  --color-bg-surface: #14181E;
+  --color-bg-elevated: #1C212A;
+  --color-border-subtle: rgba(232, 201, 122, 0.08);
+  --color-border-hover: rgba(232, 201, 122, 0.18);
+  --color-text-primary: #EAE7DE;
+  --color-text-secondary: #9B968A;
+  --color-text-muted: #5C584E;
+  --color-accent-gold: #E8C97A;
+  --color-accent-sage: #7A9E8A;
+  --color-accent-copper: #C97B5A;
   --color-style-formal: #708D81;
   --color-style-sarcastic: #F4D58D;
   --color-style-tech: #BF0603;
   --color-style-nontech: #8D0801;
-  --color-error: #BF0603;
-  --color-success: #708D81;
-  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --color-error: #C97B5A;
+  --color-success: #7A9E8A;
+  --font-display: 'DM Sans', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-geist-pixel: 'Geist Pixel', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 /* ── Base resets ── */
@@ -44,6 +44,13 @@ body {
 #root {
   position: relative;
   z-index: 1;
+}
+
+/* ── Focus visible ring ── */
+*:focus-visible {
+  outline: 2px solid var(--color-accent-gold);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 /* ── Custom animations ── */
@@ -69,8 +76,8 @@ body {
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 213, 141, 0.2); }
-  50% { box-shadow: 0 0 20px 4px rgba(244, 213, 141, 0.1); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 201, 122, 0.2); }
+  50% { box-shadow: 0 0 20px 4px rgba(232, 201, 122, 0.1); }
 }
 
 @keyframes slideInRight {
@@ -93,6 +100,17 @@ body {
     opacity: 0;
     transform: translateX(100%);
   }
+}
+
+@keyframes scaleCheck {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ── Utility animation classes ── */
@@ -127,16 +145,20 @@ body {
   animation: slideOutRight 0.3s ease-in both;
 }
 
+@utility animate-scale-check {
+  animation: scaleCheck 0.35s ease-out both;
+}
+
 /* ── Glass surface ── */
 @utility glass {
-  background: rgba(244, 213, 141, 0.03);
+  background: rgba(232, 201, 122, 0.03);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--color-border-subtle);
 }
 
 @utility glass-hover {
-  background: rgba(244, 213, 141, 0.05);
+  background: rgba(232, 201, 122, 0.06);
   border-color: var(--color-border-hover);
 }
 
@@ -150,10 +172,21 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(244, 213, 141, 0.1);
+  background: rgba(232, 201, 122, 0.1);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(244, 213, 141, 0.2);
+  background: rgba(232, 201, 122, 0.2);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

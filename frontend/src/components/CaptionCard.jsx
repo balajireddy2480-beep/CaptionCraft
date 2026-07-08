@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { STYLES } from '../utils/constants';
 import { countWords } from '../utils/helpers';
 
-export default function CaptionCard({ styleId, caption, delay = 0 }) {
+export default function CaptionCard({ styleId, caption, delay = 0, fontFamily }) {
   const [copied, setCopied] = useState(false);
 
   const style = STYLES.find((s) => s.id === styleId);
@@ -29,10 +29,10 @@ export default function CaptionCard({ styleId, caption, delay = 0 }) {
 
   return (
     <div
-      className="glass rounded-2xl overflow-hidden animate-slide-up hover:glass-hover transition-all duration-300 group"
+      className="glass rounded-2xl overflow-hidden animate-slide-up hover:glass-hover transition-all duration-300 group shadow-lg shadow-black/5"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className={`px-5 py-3.5 border-b border-border-subtle flex items-center gap-3`}>
+      <div className="px-5 py-3.5 border-b border-border-subtle flex items-center gap-3">
         <div className={`w-8 h-8 rounded-lg ${style.bgClass} flex items-center justify-center`}>
           <span className="text-current">{style.icon}</span>
         </div>
@@ -43,26 +43,40 @@ export default function CaptionCard({ styleId, caption, delay = 0 }) {
       </div>
 
       <div className="px-5 py-5">
-        <p className="text-text-primary text-[15px] leading-relaxed">
+        <p
+          className="text-text-primary text-[15px] leading-relaxed"
+          style={fontFamily ? { fontFamily } : undefined}
+        >
           {caption}
         </p>
       </div>
 
       <div className="px-5 py-3 border-t border-border-subtle flex items-center justify-between">
-        <span className="text-[11px] font-medium text-text-muted bg-white/5 px-2.5 py-1 rounded-full">
+        <span className="text-[11px] font-medium text-text-muted bg-white/[0.04] px-2.5 py-1 rounded-full">
           {wordCount} words
         </span>
         <button
           onClick={handleCopy}
           className={`
-            text-xs font-medium px-3 py-1.5 rounded-lg
+            flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg
             transition-all duration-200
             ${copied
-              ? 'bg-success/15 text-success'
-              : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+              ? 'bg-accent-sage/15 text-accent-sage'
+              : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.04]'
             }
           `}
+          aria-label={copied ? 'Copied to clipboard' : 'Copy caption to clipboard'}
         >
+          {copied && (
+            <svg className="w-3.5 h-3.5 animate-scale-check" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          )}
+          {!copied && (
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+            </svg>
+          )}
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>

@@ -3,10 +3,12 @@ import Header from './components/Header';
 import UploadZone from './components/UploadZone';
 import VideoPreview from './components/VideoPreview';
 import StyleSelector from './components/StyleSelector';
+import FontSelector from './components/FontSelector';
 import GenerateButton from './components/GenerateButton';
 import Skeleton from './components/Skeleton';
 import CaptionGrid from './components/CaptionGrid';
 import ActionBar from './components/ActionBar';
+import Footer from './components/Footer';
 import Toast from './components/Toast';
 import { useUpload } from './hooks/useUpload';
 import { useCaptions } from './hooks/useCaptions';
@@ -19,6 +21,8 @@ const HELP_STEPS = [
   { step: 3, title: 'Generate captions', desc: 'AI analyzes your video and writes styled captions in seconds.' },
   { step: 4, title: 'Copy or download', desc: 'Copy individual captions or download the full set as JSON.' },
 ];
+
+const DEFAULT_FONT = "'Inter', sans-serif";
 
 export default function App() {
   const {
@@ -44,6 +48,8 @@ export default function App() {
   const [selectedStyles, setSelectedStyles] = useState(
     STYLES.map((s) => s.id)
   );
+
+  const [selectedFont, setSelectedFont] = useState(DEFAULT_FONT);
 
   const [toast, setToast] = useState(null);
   const [showHelp, setShowHelp] = useState(false);
@@ -72,6 +78,7 @@ export default function App() {
     clearFile();
     resetCaptions();
     setSelectedStyles(STYLES.map((s) => s.id));
+    setSelectedFont(DEFAULT_FONT);
     setToast(null);
   }, [clearFile, resetCaptions]);
 
@@ -85,7 +92,6 @@ export default function App() {
 
   return (
     <BeamsBackground intensity="subtle">
-      {/* Top-left brand logomark */}
       <button
         onClick={handleLogoClick}
         className="fixed top-5 left-5 z-30 flex items-center gap-2 px-3 py-2 rounded-xl glass hover:glass-hover transition-all duration-200 cursor-pointer"
@@ -94,10 +100,8 @@ export default function App() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-accent-gold">
           <polygon points="5,3 19,12 5,21" />
         </svg>
-        <span className="text-text-secondary text-xs font-semibold tracking-wider hidden sm:inline">CC</span>
       </button>
 
-      {/* Top-right help button */}
       <button
         onClick={() => setShowHelp(true)}
         className="fixed top-5 right-5 z-30 w-9 h-9 rounded-xl glass hover:glass-hover transition-all duration-200 cursor-pointer flex items-center justify-center"
@@ -110,10 +114,10 @@ export default function App() {
         </svg>
       </button>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-16">
         <Header />
 
-        <main className="space-y-6">
+        <main className="space-y-8">
           {!file ? (
             <UploadZone
               onFileSelect={onFileSelect}
@@ -129,17 +133,24 @@ export default function App() {
           )}
 
           {file && (
-            <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-              <StyleSelector
-                selectedStyles={selectedStyles}
-                onToggle={onToggleStyle}
-                disabled={isLoading}
-              />
+            <div className="relative z-20 animate-slide-up" style={{ animationDelay: '100ms' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <StyleSelector
+                  selectedStyles={selectedStyles}
+                  onToggle={onToggleStyle}
+                  disabled={isLoading}
+                />
+                <FontSelector
+                  selectedFont={selectedFont}
+                  onFontChange={setSelectedFont}
+                  disabled={isLoading}
+                />
+              </div>
             </div>
           )}
 
           {file && !captions && (
-            <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
+            <div className="relative z-10 animate-slide-up" style={{ animationDelay: '200ms' }}>
               <GenerateButton
                 onClick={onGenerate}
                 disabled={!canGenerate}
@@ -159,6 +170,7 @@ export default function App() {
               <CaptionGrid
                 captions={captions}
                 selectedStyles={selectedStyles}
+                fontFamily={selectedFont}
               />
               <ActionBar
                 captions={captions}
@@ -168,31 +180,24 @@ export default function App() {
           )}
         </main>
 
-        <footer className="text-center mt-16 pb-8">
-          <p className="text-text-muted text-xs">
-            Powered by{' '}
-            <span className="text-text-secondary">Fireworks AI</span>
-            {' '}• Qwen3 Omni
-          </p>
-        </footer>
+        <Footer />
       </div>
 
-      {/* Help overlay */}
       {showHelp && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setShowHelp(false)}
         >
-          <div className="absolute inset-0 bg-[#001427]/80 backdrop-blur-md" />
+          <div className="absolute inset-0 bg-bg-primary/80 backdrop-blur-md" />
           <div
-            className="relative glass rounded-2xl max-w-md w-full p-6 animate-slide-up"
+            className="relative glass rounded-2xl max-w-md w-full p-6 animate-slide-up shadow-xl shadow-black/20"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-text-primary">How it works</h2>
+              <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-text-primary">How it works</h2>
               <button
                 onClick={() => setShowHelp(false)}
-                className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer"
+                className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center hover:bg-white/[0.08] transition-colors cursor-pointer"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4 text-text-secondary">
                   <line x1="18" y1="6" x2="6" y2="18" />

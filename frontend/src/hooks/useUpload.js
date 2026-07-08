@@ -1,6 +1,6 @@
 /**
- * Custom hook for managing video file upload state.
- */
+* Custom hook for managing video file upload state.
+*/
 import { useState, useCallback } from 'react';
 import { validateFile, getVideoDuration } from '../utils/helpers';
 
