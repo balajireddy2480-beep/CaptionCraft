@@ -1,0 +1,114 @@
+# =============================================================================
+# Video Captioning Agent — Docker Compose
+# =============================================================================
+# Usage:
+#   docker compose up -d                    # Start all services
+#   docker compose up --scale worker=3 -d   # Scale workers horizontally
+#   docker compose down -v                  # Tear down (removes volumes)
+# =============================================================================
+
+version: "3.9"
+
+x-defaults: &defaults
+  restart: unless-stopped
+  env_file:
+    - .env
+  networks:
+    - captioning-net
+
+
+services:
+  # ===========================================================================
+  # PostgreSQL — Primary Database
+  # ===========================================================================
+  postgres:
+    <<: *defaults
+    image: postgres:16-alpine
+    container_name: caption-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: video_captioning
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # Redis — Queue Broker & Rate Limiting Backend
+  # ===========================================================================
+  redis:
+    <<: *defaults
+    image: redis:7-alpine
+    container_name: caption-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ===========================================================================
+  # API — FastAPI Application Server
+  # ===========================================================================
+  api:
+    <<: *defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caption-api
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/video_captioning
+      - REDIS_URL=redis://redis:6379/0
+    command: >
+      sh -c "
+        alembic upgrade head &&
+        uvicorn backend.main:app --host 0.0.0.0 --port 8000 --log-level info
+      "
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - temp_data:/tmp/video_captions
+
+  # ===========================================================================
+  # Worker — Celery Background Task Processor
+  # ===========================================================================
+  worker:
+    <<: *defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caption-worker
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/video_captioning
+      - REDIS_URL=redis://redis:6379/0
+    command: celery -A backend.worker.celery_app worker --loglevel=info --pool=solo
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - temp_data:/tmp/video_captions
+    # Scale horizontally: docker compose up --scale worker=3 -d
+
+volumes:
+  pgdata:
+    driver: local
+  temp_data:
+    driver: local
+
+networks:
+  captioning-net:
+    driver: bridge

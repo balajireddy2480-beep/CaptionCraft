@@ -3,6 +3,9 @@ import CaptionCard from './CaptionCard';
 export default function CaptionGrid({ captions, selectedStyles, fontFamily }) {
   if (!captions) return null;
 
+  const processingTime = Number(captions.processing_time_seconds);
+  const hasProcessingTime = Number.isFinite(processingTime) && processingTime > 0;
+
   return (
     <div className="space-y-5">
       {captions.video_summary && (
@@ -33,9 +36,9 @@ export default function CaptionGrid({ captions, selectedStyles, fontFamily }) {
         })}
       </div>
 
-      {captions.processing_time_seconds > 0 && (
+      {hasProcessingTime && (
         <p className="text-text-muted text-xs text-center animate-fade-in">
-          Generated in {captions.processing_time_seconds.toFixed(1)}s using{' '}
+          Generated in {processingTime.toFixed(1)}s using{' '}
           <span className="text-text-secondary">{captions.model_used?.split('/').pop()}</span>
         </p>
       )}

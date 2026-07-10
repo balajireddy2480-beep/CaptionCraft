@@ -1,0 +1,282 @@
+You are a senior full-stack engineer. Your task is to debug and permanently fix the caption generation pipeline. Do NOT apply temporary fixes or suppress errors. Find the root cause, implement a production-ready solution, and verify it with end-to-end testing.
+
+## Problem Summary
+
+The application uploads a video successfully, but caption generation fails.
+
+Observed issues:
+
+- Upload completes successfully.
+- UI stays on "Uploading..." or "Analyzing video..."
+- Caption generation never finishes.
+- Sometimes the backend returns:
+  FireworksAIError: Failed to generate valid captions after 3 attempts. Last error: Partial extraction: got 3/4 captions. Missing: humorous_non_tech.
+- Sometimes polling fails with:
+  Failed to poll task: HTTP 500.
+- The loading spinner sometimes never stops.
+
+## Your Objectives
+
+Debug the complete pipeline from start to finish and fix every issue.
+
+Trace this entire flow:
+
+Video Upload
+→ Task Creation
+→ Backend Processing
+→ Fireworks AI Request
+→ Polling
+→ Response Parsing
+→ Caption Validation
+→ Database/API Response
+→ Frontend Rendering
+
+Determine exactly where the failure occurs.
+
+## Investigation Checklist
+
+### 1. Upload Pipeline
+
+Verify:
+
+- upload endpoint
+- file storage
+- task creation
+- returned task ID
+- task status updates
+
+Ensure upload completes correctly before analysis begins.
+
+### 2. Fireworks AI Request
+
+Inspect:
+
+- API request payload
+- model configuration
+- prompt
+- temperature
+- max tokens
+- timeout
+- retries
+
+Log:
+
+- request payload
+- response payload
+- HTTP status
+- request ID
+- latency
+- raw model output
+
+Verify the model actually returns all required captions.
+
+### 3. Prompt Quality
+
+Inspect the LLM prompt.
+
+Ensure it explicitly requires EXACTLY these four fields:
+
+{
+  "formal": "...",
+  "sarcastic": "...",
+  "tech_humor": "...",
+  "humorous_non_tech": "..."
+}
+
+Rules:
+
+- JSON only
+- No markdown
+- No explanations
+- No extra text
+- All four fields are mandatory
+
+Improve the prompt if necessary.
+
+### 4. JSON Parsing
+
+Inspect the parser.
+
+Determine whether failures are caused by:
+
+- invalid JSON
+- missing fields
+- incorrect field names
+- markdown wrappers
+- trailing commas
+- malformed output
+
+Implement resilient parsing that can recover valid JSON whenever possible.
+
+### 5. Caption Validation
+
+Inspect validation logic.
+
+Find where validation rejects responses.
+
+Investigate why:
+
+humorous_non_tech
+
+is frequently missing.
+
+If only one caption is missing:
+
+- regenerate only the missing caption when possible
+- avoid regenerating the entire response unnecessarily
+
+Provide clear validation errors.
+
+### 6. Polling
+
+Investigate the HTTP 500 polling error.
+
+Verify:
+
+- polling endpoint
+- task lookup
+- database state
+- queue worker
+- task lifecycle
+- timeout handling
+- race conditions
+
+Ensure polling returns consistent statuses:
+
+queued
+processing
+completed
+failed
+
+Never leave the frontend waiting indefinitely.
+
+### 7. Backend Logging
+
+Add structured logging for every stage:
+
+UPLOAD_STARTED
+
+UPLOAD_COMPLETED
+
+TASK_CREATED
+
+ANALYSIS_STARTED
+
+FIREWORKS_REQUEST
+
+FIREWORKS_RESPONSE
+
+JSON_PARSE
+
+VALIDATION
+
+DATABASE_SAVE
+
+POLL_REQUEST
+
+POLL_RESPONSE
+
+TASK_COMPLETED
+
+TASK_FAILED
+
+Every log should include:
+
+- timestamp
+- task ID
+- execution time
+- error details
+- stack trace
+- request ID (if available)
+
+### 8. Frontend
+
+Inspect:
+
+- upload state
+- polling logic
+- loading indicators
+- progress bar
+- API response handling
+- retry logic
+- error rendering
+
+Ensure:
+
+- loading always ends
+- success state renders correctly
+- failure state displays meaningful errors
+- polling stops after completion or failure
+
+### 9. Error Handling
+
+Replace generic errors with actionable diagnostics.
+
+Instead of:
+
+"Failed to generate captions"
+
+Return:
+
+- failure stage
+- missing field
+- validation error
+- Fireworks response
+- retry count
+- task ID
+
+### 10. Code Quality
+
+Remove duplicated logic.
+
+Refactor complex functions.
+
+Improve maintainability.
+
+Add comments only where necessary.
+
+Keep the solution production-ready.
+
+### 11. Testing
+
+Run complete end-to-end tests.
+
+Verify:
+
+✓ Upload succeeds
+✓ Analysis starts
+✓ Fireworks request succeeds
+✓ JSON parses correctly
+✓ All four captions are generated
+✓ Validation passes
+✓ Database updates
+✓ Polling finishes correctly
+✓ UI displays captions
+✓ No HTTP 500 errors
+✓ Spinner always stops
+
+Test multiple videos.
+
+Test retry scenarios.
+
+Test malformed AI responses.
+
+Test network failures.
+
+## Deliverables
+
+After completing the work, provide a report containing:
+
+1. Root cause(s) discovered.
+2. Why only 3 of 4 captions were generated.
+3. Why polling returned HTTP 500.
+4. Files modified.
+5. Exact code changes made.
+6. Validation improvements.
+7. Prompt improvements.
+8. Logging improvements.
+9. Error handling improvements.
+10. Test results.
+11. Remaining risks (if any).
+
+Do not stop until the entire caption generation pipeline works reliably from upload to final caption display, with all four caption styles generated successfully and no infinite loading or polling failures.

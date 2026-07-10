@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+.pytest_cache
+__pycache__
+*.pyc
+.mypy_cache
+.ruff_cache
+frontend/node_modules
+frontend/.vite
+frontend/.cache
+node_modules
+temporray files
+input
+output

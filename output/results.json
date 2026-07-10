@@ -1,0 +1,29 @@
+[
+  {
+    "task_id": "v1",
+    "captions": {
+      "formal": "A time-lapse video depicts heavy traffic flowing along a wide urban avenue lined with golden autumn trees, with high-rise apartment complexes visible in the background.",
+      "sarcastic": "Ah yes, the serene beauty of nature, perfectly complemented by the soul-crushing reality of rush hour traffic.",
+      "humorous_tech": "This urban highway is running at maximum bandwidth, processing thousands of vehicle packets per second without dropping a single connection.",
+      "humorous_non_tech": "The leaves are turning a beautiful golden yellow, providing a lovely backdrop for everyone's daily struggle to merge lanes."
+    }
+  },
+  {
+    "task_id": "v2",
+    "captions": {
+      "formal": "A small, fluffy orange kitten walks cautiously forward through a shaded, wooded area with green foliage and tree trunks.",
+      "sarcastic": "Oh look, another tiny apex predator emerging from the underbrush to conquer the world, one wobbly step at a time.",
+      "humorous_tech": "A new instance of Kitten v1.0 has been deployed to the production environment and is currently executing its walk_towards_camera() function.",
+      "humorous_non_tech": "This little fluffball is on a very serious mission to find the nearest sunbeam and take a 16-hour nap."
+    }
+  },
+  {
+    "task_id": "v3",
+    "captions": {
+      "formal": "A woman is seated at a desk in a modern office environment, typing on a keyboard and looking at a computer monitor.",
+      "sarcastic": "Behold the pinnacle of modern productivity: staring intensely at a screen while typing away, presumably about something that could have been an email.",
+      "humorous_tech": "She is currently debugging her life choices while the main thread of her consciousness is stuck in a while(true) loop of typing.",
+      "humorous_non_tech": "She's typing with the intensity of someone trying to finish a group project five minutes before the deadline."
+    }
+  }
+]
